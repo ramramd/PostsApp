@@ -6,18 +6,27 @@
 //
 
 import SwiftUI
+import Combine
 
 struct ContentView: View {
+    
+    @ObservedObject var vm = PostsViewModel()
+    
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundColor(.accentColor)
-            Text("Hello, world!")
+        NavigationView {
+            List {
+                ForEach(vm.posts, id:  \.self) { post in
+                    NavigationLink(destination: DetailsView(objectData: post)) {
+                        SingleTextView(title: post.title)
+                    }
+                }
+            }.onAppear(){
+                vm.getPosts()
+            }.navigationTitle("Posts")
         }
-        .padding()
     }
 }
+
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
